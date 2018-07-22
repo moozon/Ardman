@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPagePwm = new System.Windows.Forms.TabPage();
+            this.labelPwmRate = new System.Windows.Forms.Label();
+            this.labelPwmMode2 = new System.Windows.Forms.Label();
             this.buttonPwmReset = new System.Windows.Forms.Button();
             this.checkBoxPwmDebug = new System.Windows.Forms.CheckBox();
             this.checkBoxPwmLogs = new System.Windows.Forms.CheckBox();
@@ -61,17 +63,16 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labelConnection = new System.Windows.Forms.Label();
             this.buttonRefreshPorts = new System.Windows.Forms.Button();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.comboBoxBaud = new System.Windows.Forms.ComboBox();
-            this.comboBoxPorts = new System.Windows.Forms.ComboBox();
+            this.comboBoxComPorts = new System.Windows.Forms.ComboBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerSerialPort = new System.Windows.Forms.Timer(this.components);
-            this.labelPwmMode2 = new System.Windows.Forms.Label();
-            this.labelPwmRate = new System.Windows.Forms.Label();
-            this.labelConnection = new System.Windows.Forms.Label();
+            this.timerUpdateComPorts = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPagePwm.SuspendLayout();
             this.tabPageSerialMonitor.SuspendLayout();
@@ -127,6 +128,24 @@
             this.tabPagePwm.TabIndex = 0;
             this.tabPagePwm.Text = "PWM";
             this.tabPagePwm.UseVisualStyleBackColor = true;
+            // 
+            // labelPwmRate
+            // 
+            this.labelPwmRate.AutoSize = true;
+            this.labelPwmRate.Location = new System.Drawing.Point(100, 57);
+            this.labelPwmRate.Name = "labelPwmRate";
+            this.labelPwmRate.Size = new System.Drawing.Size(33, 13);
+            this.labelPwmRate.TabIndex = 21;
+            this.labelPwmRate.Text = "Rate:";
+            // 
+            // labelPwmMode2
+            // 
+            this.labelPwmMode2.AutoSize = true;
+            this.labelPwmMode2.Location = new System.Drawing.Point(6, 57);
+            this.labelPwmMode2.Name = "labelPwmMode2";
+            this.labelPwmMode2.Size = new System.Drawing.Size(37, 13);
+            this.labelPwmMode2.TabIndex = 20;
+            this.labelPwmMode2.Text = "Mode:";
             // 
             // buttonPwmReset
             // 
@@ -404,7 +423,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
@@ -420,13 +439,22 @@
             this.groupBox1.Controls.Add(this.buttonRefreshPorts);
             this.groupBox1.Controls.Add(this.buttonConnect);
             this.groupBox1.Controls.Add(this.comboBoxBaud);
-            this.groupBox1.Controls.Add(this.comboBoxPorts);
+            this.groupBox1.Controls.Add(this.comboBoxComPorts);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox1.Location = new System.Drawing.Point(0, 24);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(150, 272);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
+            // 
+            // labelConnection
+            // 
+            this.labelConnection.AutoSize = true;
+            this.labelConnection.Location = new System.Drawing.Point(6, 10);
+            this.labelConnection.Name = "labelConnection";
+            this.labelConnection.Size = new System.Drawing.Size(64, 13);
+            this.labelConnection.TabIndex = 7;
+            this.labelConnection.Text = "Connection:";
             // 
             // buttonRefreshPorts
             // 
@@ -451,18 +479,22 @@
             // comboBoxBaud
             // 
             this.comboBoxBaud.FormattingEnabled = true;
+            this.comboBoxBaud.Items.AddRange(new object[] {
+            "9600",
+            "115200"});
             this.comboBoxBaud.Location = new System.Drawing.Point(6, 53);
             this.comboBoxBaud.Name = "comboBoxBaud";
             this.comboBoxBaud.Size = new System.Drawing.Size(138, 21);
             this.comboBoxBaud.TabIndex = 0;
             // 
-            // comboBoxPorts
+            // comboBoxComPorts
             // 
-            this.comboBoxPorts.FormattingEnabled = true;
-            this.comboBoxPorts.Location = new System.Drawing.Point(6, 26);
-            this.comboBoxPorts.Name = "comboBoxPorts";
-            this.comboBoxPorts.Size = new System.Drawing.Size(138, 21);
-            this.comboBoxPorts.TabIndex = 0;
+            this.comboBoxComPorts.FormattingEnabled = true;
+            this.comboBoxComPorts.Location = new System.Drawing.Point(6, 26);
+            this.comboBoxComPorts.Name = "comboBoxComPorts";
+            this.comboBoxComPorts.Size = new System.Drawing.Size(138, 21);
+            this.comboBoxComPorts.TabIndex = 0;
+            this.comboBoxComPorts.SelectionChangeCommitted += new System.EventHandler(this.comboBoxPorts_SelectionChangeCommitted);
             // 
             // serialPort1
             // 
@@ -482,7 +514,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(38, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(39, 17);
             this.toolStripStatusLabel1.Text = "Status";
             // 
             // timerSerialPort
@@ -490,32 +522,10 @@
             this.timerSerialPort.Interval = 5000;
             this.timerSerialPort.Tick += new System.EventHandler(this.timerSerialPort_Tick);
             // 
-            // labelPwmMode2
+            // timerUpdateComPorts
             // 
-            this.labelPwmMode2.AutoSize = true;
-            this.labelPwmMode2.Location = new System.Drawing.Point(6, 57);
-            this.labelPwmMode2.Name = "labelPwmMode2";
-            this.labelPwmMode2.Size = new System.Drawing.Size(37, 13);
-            this.labelPwmMode2.TabIndex = 20;
-            this.labelPwmMode2.Text = "Mode:";
-            // 
-            // labelPwmRate
-            // 
-            this.labelPwmRate.AutoSize = true;
-            this.labelPwmRate.Location = new System.Drawing.Point(100, 57);
-            this.labelPwmRate.Name = "labelPwmRate";
-            this.labelPwmRate.Size = new System.Drawing.Size(33, 13);
-            this.labelPwmRate.TabIndex = 21;
-            this.labelPwmRate.Text = "Rate:";
-            // 
-            // labelConnection
-            // 
-            this.labelConnection.AutoSize = true;
-            this.labelConnection.Location = new System.Drawing.Point(6, 10);
-            this.labelConnection.Name = "labelConnection";
-            this.labelConnection.Size = new System.Drawing.Size(64, 13);
-            this.labelConnection.TabIndex = 7;
-            this.labelConnection.Text = "Connection:";
+            this.timerUpdateComPorts.Interval = 5000;
+            this.timerUpdateComPorts.Tick += new System.EventHandler(this.timerUpdateComPorts_Tick);
             // 
             // FormArdman
             // 
@@ -563,7 +573,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.ComboBox comboBoxBaud;
-        private System.Windows.Forms.ComboBox comboBoxPorts;
+        private System.Windows.Forms.ComboBox comboBoxComPorts;
         private System.Windows.Forms.ComboBox comboBoxPwmMode;
         private System.Windows.Forms.Label labelPwmMode;
         private System.Windows.Forms.TextBox textBoxPwmSet;
@@ -590,6 +600,7 @@
         private System.Windows.Forms.Label labelPwmRate;
         private System.Windows.Forms.Label labelPwmMode2;
         private System.Windows.Forms.Label labelConnection;
+        private System.Windows.Forms.Timer timerUpdateComPorts;
     }
 }
 
