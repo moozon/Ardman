@@ -43,7 +43,7 @@ namespace Ardman
                     }
                     else if (comboBoxPwmMode.SelectedItem.ToString() == "Command")
                     {
-                        SendCommand(textBoxPwmSet.Text);
+                        SendCommand(commandsComboBoxPwm.Text.Substring(0,1));
                     }
                 }
                 catch
@@ -61,21 +61,30 @@ namespace Ardman
 
         private void comboBoxPwmMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            textBoxPwmSet.Text = "";
             if (comboBoxPwmMode.SelectedItem.ToString() == "Duty")
             {
                 buttonPwmSet.Text = "Set";
                 labelPwmMode.Text = "%";
+                commandsComboBoxPwm.Visible = false;
+                textBoxPwmSet.Visible = true;
             }
             else if (comboBoxPwmMode.SelectedItem.ToString() == "Freq")
             {
                 buttonPwmSet.Text = "Set";
                 labelPwmMode.Text = "Hz";
+                commandsComboBoxPwm.Visible = false;
+                textBoxPwmSet.Visible = true;
             }
             else
             {
                 buttonPwmSet.Text = "Send command";
                 labelPwmMode.Text = "";
+                textBoxPwmSet.Visible = false;
+                //textBoxPwmSet.Invoke(new Action(() => textBoxPwmSet.Visible = false));
+                commandsComboBoxPwm.Visible = true;
+
+
             }
         }
 
@@ -170,7 +179,7 @@ namespace Ardman
 
         }
 
-        public void SetFreq(int freq)
+        public void SetFreq(double freq)
         {
             if (serialPort1.IsOpen)
             {
@@ -188,93 +197,105 @@ namespace Ardman
 
         private void PwmPlus()
         {
-            switch (rate)
+            if (duty < 100)
             {
-                case "x1":
-                    if (serialPort1.IsOpen)
-                        serialPort1.Write(upDutyChar, 0, 1);
-                    else MessageBox.Show("Соединение не установлено", "Внимание!!!");
-                    break;
-                case "x10":
-                    SetDuty(duty + 10);
-                    break;
-                case "x100":
-                    SetDuty(duty + 100);
-                    break;
-                case "x1000":
-                    SetDuty(duty + 1000);
-                    break;
-                default:
-                    break;
+                switch (rate)
+                {
+                    case "x1":
+                        if (serialPort1.IsOpen)
+                            serialPort1.Write(upDutyChar, 0, 1);
+                        else MessageBox.Show("Соединение не установлено", "Внимание!!!");
+                        break;
+                    case "x10":
+                        SetDuty(duty + 10);
+                        break;
+                    case "x100":
+                        SetDuty(duty + 100);
+                        break;
+                    case "x1000":
+                        SetDuty(duty + 1000);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         private void PwmMinus()
         {
-            switch (rate)
+            if (duty > 0)
             {
-                case "x1":
-                    if (serialPort1.IsOpen)
-                        serialPort1.Write(downDutyChar, 0, 1);
-                    else MessageBox.Show("Соединение не установлено", "Внимание!!!");
-                    break;
-                case "x10":
-                    SetDuty(duty - 10);
-                    break;
-                case "x100":
-                    SetDuty(duty - 100);
-                    break;
-                case "x1000":
-                    SetDuty(duty - 1000);
-                    break;
-                default:
-                    break;
+                switch (rate)
+                {
+                    case "x1":
+                        if (serialPort1.IsOpen)
+                            serialPort1.Write(downDutyChar, 0, 1);
+                        else MessageBox.Show("Соединение не установлено", "Внимание!!!");
+                        break;
+                    case "x10":
+                        SetDuty(duty - 10);
+                        break;
+                    case "x100":
+                        SetDuty(duty - 100);
+                        break;
+                    case "x1000":
+                        SetDuty(duty - 1000);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         private void FreqPlus()
         {
-            switch (rate)
+            if (freq < 8000000)
             {
-                case "x1":
-                    if (serialPort1.IsOpen)
-                        serialPort1.Write(upFreqChar, 0, 1);
-                    else MessageBox.Show("Соединение не установлено", "Внимание!!!");
-                    break;
-                case "x10":
-                    SetFreq(freq + 10);
-                    break;
-                case "x100":
-                    SetFreq(freq + 100);
-                    break;
-                case "x1000":
-                    SetFreq(freq + 1000);
-                    break;
-                default:
-                    break;
+                switch (rate)
+                {
+                    case "x1":
+                        if (serialPort1.IsOpen)
+                            serialPort1.Write(upFreqChar, 0, 1);
+                        else MessageBox.Show("Соединение не установлено", "Внимание!!!");
+                        break;
+                    case "x10":
+                        SetFreq(freq + 10);
+                        break;
+                    case "x100":
+                        SetFreq(freq + 100);
+                        break;
+                    case "x1000":
+                        SetFreq(freq + 1000);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         private void FreqMinus()
         {
-            switch (rate)
+            if (freq > 0)
             {
-                case "x1":
-                    if (serialPort1.IsOpen)
-                        serialPort1.Write(downFreqChar, 0, 1);
-                    else MessageBox.Show("Соединение не установлено", "Внимание!!!");
-                    break;
-                case "x10":
-                    SetFreq(freq - 10);
-                    break;
-                case "x100":
-                    SetFreq(freq - 100);
-                    break;
-                case "x1000":
-                    SetFreq(freq - 1000);
-                    break;
-                default:
-                    break;
+                switch (rate)
+                {
+                    case "x1":
+                        if (serialPort1.IsOpen)
+                            serialPort1.Write(downFreqChar, 0, 1);
+                        else MessageBox.Show("Соединение не установлено", "Внимание!!!");
+                        break;
+                    case "x10":
+                        SetFreq(freq - 10);
+                        break;
+                    case "x100":
+                        SetFreq(freq - 100);
+                        break;
+                    case "x1000":
+                        SetFreq(freq - 1000);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

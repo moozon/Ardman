@@ -27,6 +27,7 @@ namespace Ardman
         char[] debugChar = { 'g' };
         char[] commandChar = { 'c' };
         char[] resetChar = { 'r' };
+        char[] eepromFlashChar = { 'e' };
         //char[] logOnChar = { 'l', '1' };
         //char[] logOffChar = { 'l', '0' };
 
@@ -34,18 +35,36 @@ namespace Ardman
         bool isConnect = false;
         bool isLogging = false;
         int duty;
-        int freq;
+        double freq;
         int counterTextBoxPwmOut;
         string dutyString, freqString;
         string dutyReal, freqReal;
         string lastSelectedComPort;
-
         int timerSerialPortCount;
 
+        int countRecive;
 
+        ComboBox commandsComboBoxPwm;
+
+        TextBox textBoxFake;
+
+        //Constructor
         public FormArdman()
         {
+            commandsComboBoxPwm = new ComboBox();
+            
+
             InitializeComponent();
+
+            //textBoxFake = new TextBox();
+            ////textBoxFake.Multiline = true;
+            ////this.textBoxFake.Location = new System.Drawing.Point(237, 24);
+            ////this.textBoxFake.Size = new System.Drawing.Size(272, 201);
+            ////this.textBoxFake.TabIndex = 10;
+            //textBoxFake.Visible = false;
+            //this.tabPagePwm.Controls.Add(textBoxFake);
+            //Task.Factory.StartNew(() => textBoxPwmOut.DataBindings.Add("Text", textBoxFake, "Text"));
+
 
             this.Text = "Ardman";
             rate = "x1";
@@ -64,8 +83,21 @@ namespace Ardman
             comboBoxBaud.SelectedIndex = 0;
             timerSerialPortCount = 0;
             timerUpdateComPorts.Start();
-        }
+            
 
+            string[] commands = new string[] {"reboot","eeprom", "sleep", "test" };
+            commandsComboBoxPwm.DataSource = commands;
+            commandsComboBoxPwm.Location = textBoxPwmSet.Location;
+            commandsComboBoxPwm.Margin = textBoxPwmSet.Margin;
+            commandsComboBoxPwm.Size = textBoxPwmSet.Size;
+            commandsComboBoxPwm.Visible = false;
+            this.tabPagePwm.Controls.Add(commandsComboBoxPwm);
+
+            
+        }
+               
+
+        //Methods
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
@@ -120,46 +152,65 @@ namespace Ardman
 
             }
         }
-        
+
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+            countRecive++;
+            countReciveLabel.Invoke(new Action(() => countReciveLabel.Text = countRecive.ToString()));
             isLogging = true;
             int incomingByte = serialPort1.ReadChar();
-            serialPort1.ReadLine();             //!!!Чтение лишнего байта. Необходимо для корректного считывания
+            //serialPort1.ReadLine();             //!!!Чтение лишнего байта. Необходимо для корректного считывания
 
             if (incomingByte == 'l')
             {
-                //Необходимо соблюдать прием всех встрок, иначе будут ошибки приема
+                //Необходимо соблюдать прием всех строк, иначе будут ошибки приема
                 counterTextBoxPwmOut++;
-                dutyString = serialPort1.ReadLine();
                 freqString = serialPort1.ReadLine();
-                ///
-                dutyReal = serialPort1.ReadLine();
+                dutyString = serialPort1.ReadLine();
+                ///                
                 freqReal = serialPort1.ReadLine();
-                string test = serialPort1.ReadLine();   //Test string from Serial
-                //Debug Serial
-                string debugString = serialPort1.ReadExisting();
+                dutyReal = serialPort1.ReadLine();
+
                 labelPwmDutyValue.Invoke(new Action(() => labelPwmDutyValue.Text = dutyString));
                 labelPwmFreqValue.Invoke(new Action(() => labelPwmFreqValue.Text = freqString));
                 if (counterTextBoxPwmOut > 1)
                 {
                     if (isLogging)
-                    { 
-                    textBoxPwmOut.Invoke(new Action(() =>
                     {
-                        textBoxPwmOut.AppendText("Test: " + test + Environment.NewLine);
-                        textBoxPwmOut.AppendText("Real Freq: " + freqReal + Environment.NewLine);
-                        if (isDebugging)
-                            textBoxPwmOut.AppendText(debugString + Environment.NewLine);
-
-                    }));
+                        
+                        textBoxPwmOut.Invoke(new Action(() =>
+                        {
+                            textBoxPwmOut.AppendText("Real Freq: " + freqReal + Environment.NewLine);
+                            textBoxPwmOut.AppendText("Real Duty: " + dutyReal + Environment.NewLine);
+                        }));
                     }
                     //Console.WriteLine(icr);
                     counterTextBoxPwmOut = 0;
                 }
-                duty = Convert.ToInt32(dutyString);
-                freq = Convert.ToInt32(freqString);
+                try
+                {
+                    freq = Convert.ToDouble(freqString.Substring(0, freqString.Length - 4));
+                    duty = Convert.ToInt32(dutyString);
+                }
+                catch (Exception ex)
+                {
+                    //throw new Exception(ex.Message);
+                    textBoxPwmOut.Invoke(new Action(() => textBoxPwmOut.AppendText("Недопустимое значение принятых данных \n")));
+                }
+            
 
+            }
+            else if (incomingByte == 'd')
+            {
+                //string debugString = serialPort1.ReadExisting();
+                string debugString = serialPort1.ReadLine();
+
+                //textBoxFake.Invoke(new Action(() => textBoxFake.AppendText(debugString + Environment.NewLine)));
+                textBoxPwmOut.Invoke(new Action(() =>
+                {
+                    //if (isDebugging)
+                    textBoxPwmOut.AppendText(debugString + Environment.NewLine);
+                }));
             }
 
 

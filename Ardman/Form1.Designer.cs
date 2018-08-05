@@ -73,6 +73,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerSerialPort = new System.Windows.Forms.Timer(this.components);
             this.timerUpdateComPorts = new System.Windows.Forms.Timer(this.components);
+            this.countReciveLabel = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPagePwm.SuspendLayout();
             this.tabPageSerialMonitor.SuspendLayout();
@@ -100,6 +101,7 @@
             // 
             // tabPagePwm
             // 
+            this.tabPagePwm.Controls.Add(this.countReciveLabel);
             this.tabPagePwm.Controls.Add(this.labelPwmRate);
             this.tabPagePwm.Controls.Add(this.labelPwmMode2);
             this.tabPagePwm.Controls.Add(this.buttonPwmReset);
@@ -527,6 +529,15 @@
             this.timerUpdateComPorts.Interval = 5000;
             this.timerUpdateComPorts.Tick += new System.EventHandler(this.timerUpdateComPorts_Tick);
             // 
+            // countReciveLabel
+            // 
+            this.countReciveLabel.AutoSize = true;
+            this.countReciveLabel.Location = new System.Drawing.Point(11, 183);
+            this.countReciveLabel.Name = "countReciveLabel";
+            this.countReciveLabel.Size = new System.Drawing.Size(35, 13);
+            this.countReciveLabel.TabIndex = 22;
+            this.countReciveLabel.Text = "label1";
+            // 
             // FormArdman
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -601,6 +612,7 @@
         private System.Windows.Forms.Label labelPwmMode2;
         private System.Windows.Forms.Label labelConnection;
         private System.Windows.Forms.Timer timerUpdateComPorts;
+        private System.Windows.Forms.Label countReciveLabel;
     }
 }
 
