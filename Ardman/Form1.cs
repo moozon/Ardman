@@ -35,7 +35,7 @@ namespace Ardman
         bool isConnect = false;
         bool isLogging = false;
         int duty;
-        double freq;
+        int freq;
         int counterTextBoxPwmOut;
         string dutyString, freqString;
         string dutyReal, freqReal;
@@ -85,7 +85,7 @@ namespace Ardman
             timerUpdateComPorts.Start();
             
 
-            string[] commands = new string[] {"reboot","eeprom", "sleep", "test" };
+            string[] commands = new string[] {"reboot","eeprom", "sleep", "t5 - Logging timeout"};
             commandsComboBoxPwm.DataSource = commands;
             commandsComboBoxPwm.Location = textBoxPwmSet.Location;
             commandsComboBoxPwm.Margin = textBoxPwmSet.Margin;
@@ -166,7 +166,7 @@ namespace Ardman
                 //Необходимо соблюдать прием всех строк, иначе будут ошибки приема
                 counterTextBoxPwmOut++;
                 freqString = serialPort1.ReadLine();
-                dutyString = serialPort1.ReadLine();
+                dutyString = serialPort1.ReadLine();                
                 ///                
                 freqReal = serialPort1.ReadLine();
                 dutyReal = serialPort1.ReadLine();
@@ -189,7 +189,7 @@ namespace Ardman
                 }
                 try
                 {
-                    freq = Convert.ToDouble(freqString.Substring(0, freqString.Length - 4));
+                    freq = Convert.ToInt32(freqString);
                     duty = Convert.ToInt32(dutyString);
                 }
                 catch (Exception ex)
